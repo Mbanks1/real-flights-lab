@@ -1,8 +1,14 @@
 const Flight = require('../models/flight')
+
 module.exports = {
+
     create,
     deleteTicket,
-}
+
+
+};
+
+
 function create(req, res) {
     Flight.findById(req.params.id, function(err, flight){
         flight.tickets.push(req.body)
@@ -10,7 +16,9 @@ function create(req, res) {
             res.redirect(`/flights/${flight._id}`)
         })
     })
-}
+};
+
+
 function deleteTicket(req, res){
     console.log(req.params)
     Flight.findById(req.params.flightId)

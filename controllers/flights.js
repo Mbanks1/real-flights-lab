@@ -1,5 +1,6 @@
 const Flight = require('../models/flight')
 const Destination = require('../models/destination')
+
 module.exports = {
     new: newFlight,
     create, 
@@ -7,6 +8,7 @@ module.exports = {
     show,
     delete: deleteOne,
     addToDestinations
+
 }
 function newFlight(req, res) {
     res.render('flights/new', {err: '', title: 'New Flight'})
@@ -16,7 +18,8 @@ function create(req, res){
         if (req.body[key] === '') delete req.body[key]
     }
     const flight = new Flight(req.body)
-    flight.save(function(err) {
+    flight.save(function(err){
+        console.log(err)
     if (err){ return res.redirect('/flights/new')} 
     res.redirect(`/flights/${flight._id}`)
   })
@@ -28,7 +31,7 @@ function index(req, res){
 }
 function show(req,res){
     Flight.findById(req.params.id)
-    .populate('destination').exec(function(err, flight){
+    .populate('destinations').exec(function(err, flight){
         Destination.find({_id: {$nin: flight.destinations}},
             function(err, destinations){
                 res.render('flights/show',{title: 'Flight Details', flight, destinations})
@@ -44,7 +47,7 @@ function deleteOne(req, res){
 
 function addToDestinations(req, res){
     Flight.findById(req.params.id, function(err, flight) {
-        flight.destination.push(req.body.destination);
+        flight.destinations.push(req.body.destination);
         flight.save(function(err) {
           res.redirect(`/flights/${flight._id}`);
         });
